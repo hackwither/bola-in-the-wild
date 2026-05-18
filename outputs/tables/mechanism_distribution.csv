@@ -1,0 +1,10 @@
+mechanism,count,pct_of_reports
+Sequential integer enumeration,19,22.6
+Cross-endpoint identifier leakage,6,7.1
+Encoded ID manipulation,5,6.0
+State confusion,5,6.0
+GraphQL global ID leakage,3,3.6
+Multi-tenant context confusion,3,3.6
+Object reassignment,2,2.4
+Email-based object binding,1,1.2
+UUID reuse,1,1.2
