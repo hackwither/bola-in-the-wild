@@ -107,8 +107,8 @@ Each family has an operational definition, distinguishing criteria for adjacent 
 │       └── family_x_severity_crosstab.csv
 │
 └── docs/
-    ├── methodology.md
-    ├── taxonomy_walkthrough.md
+    ├── inclusion_exclusion_rules.md
+    ├── taxonomy_definition.md
     └── limitations.md
 
 ```
