@@ -5,8 +5,9 @@
 > **Authors:** Bandana Kaur, Jose Haro Peralta  
 > **Affiliation:** APIsec Research Labs
 
-This repository contains the dataset, classifier prompts, figures, and analysis scripts accompanying the paper. The study presents the first large-scale empirical analysis of BOLA in publicly disclosed bug bounty reports.
+Broken Object Level Authorization (BOLA) remains one of the most prevalent and impactful API security failures, yet real-world empirical research on how BOLA manifests in production systems remains limited. This repository accompanies our large-scale meta-analysis of 100+ public HackerOne disclosures, introducing a seven-family BOLA taxonomy and a reproducible analysis pipeline for studying authorization failures across modern applications. The dataset, prompts, figures, and scripts included here support full reproduction of the paper’s reported findings. 
 
+ ![Overview Dashboard](outputs/figures/fig_overview_dashboard.png)
 ---
 
 ## Key Findings
@@ -50,6 +51,7 @@ Each family has an operational definition, distinguishing criteria for adjacent 
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
+│
 ├── data/
 │   ├── raw/
 │   │   ├── candidates_raw.json
@@ -64,22 +66,20 @@ Each family has an operational definition, distinguishing criteria for adjacent 
 │
 ├── prompts/
 │   ├── candidate_prefilter.md
-│   ├── classifier_prompt.txt
+│   └── classifier_prompt.txt
 │
-├── pipeline/
-│   ├── 01_fetch_candidates.py
-│   ├── 02_fetch_eligible_reports.py
-│   ├── gather.py
-│   ├── preprocess.py
-│   ├── normalize_fields.py
-│   └── export_processed_dataset.py
-│
-├── analysis/
-│   ├── loader.py
-│   ├── analysis.py
-│   ├── figures.py
-│   ├── config.py
-│   └── main.py
+├── src/
+│   ├── pipeline/
+│   │   ├── 01_fetch_candidates.py
+│   │   ├── 02_fetch_eligible_reports.py
+│   │   └── gather.py
+│   │
+│   └── analysis/
+│       ├── loader.py
+│       ├── analysis.py
+│       ├── figures.py
+│       ├── config.py
+│       └── main.py
 │
 ├── outputs/
 │   ├── figures/
@@ -94,7 +94,7 @@ Each family has an operational definition, distinguishing criteria for adjacent 
 │   │   ├── fig_temporal_bar.png
 │   │   └── fig_mechanism_bar.png
 │   │
-│   └──tables/
+│   └── tables/
 │       ├── family_distribution.csv
 │       ├── action_distribution.csv
 │       ├── hv_distribution.csv
