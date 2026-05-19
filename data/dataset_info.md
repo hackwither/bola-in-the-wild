@@ -19,7 +19,6 @@ Query criteria:
 - Weakness tags:
   - IDOR
   - Improper Access Control
-  - Broken Access Control
 - Disclosure period:
   - January 2021 – January 2026
 - Sorted by:
