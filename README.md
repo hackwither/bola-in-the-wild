@@ -2,7 +2,7 @@
 
 > **Paper:** *Broken Object Level Authorization in the Wild: A Taxonomy and Quantitative Meta-Analysis of 100+ HackerOne Disclosures*
 
-> **Authors:** Bandana Kaur, Jose Haro Peralta  
+> **Author:** Bandana Kaur
 > **Affiliation:** APIsec Research Labs
 
 Broken Object Level Authorization (BOLA) remains one of the most prevalent and impactful API security failures, yet real-world empirical research on how BOLA manifests in production systems remains limited. This repository accompanies our meta-analysis of 100+ public HackerOne disclosures, introducing a seven-family BOLA taxonomy and a reproducible analysis pipeline for studying authorization failures across modern applications. The dataset, prompts, figures, and scripts included here support full reproduction of the paper’s reported findings. 
