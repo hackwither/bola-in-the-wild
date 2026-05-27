@@ -1,11 +1,11 @@
-# BOLA in the Wild: Taxonomy and Meta-Analysis of 100+ HackerOne Disclosures
+# BOLA in the Wild: Taxonomy and Empirical Analysis of 100+ HackerOne Disclosures
 
-> **Paper:** *Broken Object Level Authorization in the Wild: A Taxonomy and Quantitative Meta-Analysis of 100+ HackerOne Disclosures*
+> **Paper:** *Broken Object Level Authorization in the Wild: An Empirical Taxonomy from 100+ Bug Bounty Disclosures*
 
-> **Authors:** Bandana Kaur, Jose Haro Peralta  
+> **Author:** Bandana Kaur
 > **Affiliation:** APIsec Research Labs
 
-Broken Object Level Authorization (BOLA) remains one of the most prevalent and impactful API security failures, yet real-world empirical research on how BOLA manifests in production systems remains limited. This repository accompanies our meta-analysis of 100+ public HackerOne disclosures, introducing a seven-family BOLA taxonomy and a reproducible analysis pipeline for studying authorization failures across modern applications. The dataset, prompts, figures, and scripts included here support full reproduction of the paper’s reported findings. 
+Broken Object Level Authorization (BOLA) remains one of the most prevalent and impactful API security failures, yet real-world empirical research on how BOLA manifests in production systems remains limited. This repository accompanies our empriical analysis of 100+ public HackerOne disclosures, introducing a seven-family BOLA taxonomy and a reproducible analysis pipeline for studying authorization failures across modern applications. The dataset, prompts, figures, and scripts included here support full reproduction of the paper’s reported findings. 
 
  ![Overview Dashboard](outputs/figures/fig_overview_dashboard.png)
 ---
@@ -107,8 +107,8 @@ Each family has an operational definition, distinguishing criteria for adjacent 
 │       └── family_x_severity_crosstab.csv
 │
 └── docs/
-    ├── methodology.md
-    ├── taxonomy_walkthrough.md
+    ├── inclusion_exclusion_rules.md
+    ├── taxonomy_definition.md
     └── limitations.md
 
 ```
