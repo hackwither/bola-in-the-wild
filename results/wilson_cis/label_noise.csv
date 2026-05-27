@@ -1,0 +1,3 @@
+classification,n,pct,ci_lower,ci_upper,ci_str
+In-scope BOLA,84,78.5,69.7,85.3,"[69.7%, 85.3%]"
+Unclassified,23,21.5,14.7,30.3,"[14.7%, 30.3%]"

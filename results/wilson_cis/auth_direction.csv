@@ -1,0 +1,4 @@
+direction,n,pct,ci_lower,ci_upper,ci_str
+Horizontal,72,85.7,76.5,91.8,"[76.5%, 91.8%]"
+Vertical,10,11.9,6.4,20.7,"[6.4%, 20.7%]"
+Unclear,2,2.4,0.1,8.8,"[0.1%, 8.8%]"

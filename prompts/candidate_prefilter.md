@@ -44,7 +44,7 @@ For each report output:
 
 - confidence: high or low
 
-- reason: one sentence
+- reason: concise sentence
 
 
 

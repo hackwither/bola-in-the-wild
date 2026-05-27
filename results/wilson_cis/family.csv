@@ -1,0 +1,7 @@
+bola_family,n,pct,ci_lower,ci_upper,ci_str
+Action-Level Object BOLA,35,41.7,31.7,52.4,"[31.7%, 52.4%]"
+Direct Object Reference BOLA,31,36.9,27.4,47.6,"[27.4%, 47.6%]"
+Tenant Isolation BOLA,7,8.3,3.8,16.5,"[3.8%, 16.5%]"
+Workflow-Context BOLA,5,6.0,2.2,13.5,"[2.2%, 13.5%]"
+Chained Disclosure BOLA,4,4.8,1.5,12.0,"[1.5%, 12.0%]"
+Object Rebinding BOLA,2,2.4,0.1,8.8,"[0.1%, 8.8%]"

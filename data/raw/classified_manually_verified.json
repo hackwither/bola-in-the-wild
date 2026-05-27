@@ -56,7 +56,7 @@
     {
       "report_id": "3518758",
       "program_name": "Nextcloud",
-      "severity": null,
+      "severity": "N/A",
       "industry_sector": "SaaS & Productivity",
       "http_method": "GET",
       "endpoint_pattern": "/remote.php/dav/photos/{email}/albums/{album_name}/{id}",
@@ -1069,7 +1069,7 @@
     {
       "report_id": "2524562",
       "program_name": "WakaTime",
-      "severity": null,
+      "severity": "N/A",
       "industry_sector": "SaaS & Productivity",
       "http_method": "GET",
       "endpoint_pattern": "/api/v1/users/{username}",
