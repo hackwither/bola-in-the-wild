@@ -1,8 +1,0 @@
-id_format,count,pct
-Sequential integer,31,36.9
-Unclear / not specified,33,39.3
-"Encoded ID (GraphQL GID, base64)",9,10.7
-Username,6,7.1
-Email,2,2.4
-UUID,2,2.4
-Hash,1,1.2

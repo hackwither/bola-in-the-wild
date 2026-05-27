@@ -1,7 +1,0 @@
-BOLA Family,SaaS,Social,E-commerce,Government,Enterprise,Fintech,Total
-Direct Object Reference,17,5,2,5,2,0,31
-Action-Level Object,15,5,8,2,5,0,35
-Tenant Isolation,4,2,1,0,0,0,7
-Workflow- Context,1,2,1,0,1,0,5
-Chained Disclosure,0,2,1,1,0,0,4
-Object Rebinding,0,0,0,1,0,1,2

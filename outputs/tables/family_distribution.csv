@@ -1,7 +1,0 @@
-family,count,pct
-Direct Object Reference BOLA,31,36.9
-Action-Level Object BOLA,35,41.7
-Tenant Isolation BOLA,7,8.3
-Workflow-Context BOLA,5,6.0
-Chained Disclosure BOLA,4,4.8
-Object Rebinding BOLA,2,2.4
