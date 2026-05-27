@@ -1,0 +1,7 @@
+family,weighted_count,pct
+Direct Object Reference BOLA,10.511599511599512,37.5
+Action-Level Object BOLA,9.059218559218559,32.4
+Tenant Isolation BOLA,2.5641025641025643,9.2
+Workflow-Context BOLA,2.9761904761904763,10.6
+Chained Disclosure BOLA,1.7777777777777777,6.3
+Object Rebinding BOLA,1.1111111111111112,4.0

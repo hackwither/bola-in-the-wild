@@ -65,10 +65,21 @@ FAMILY_SHORT = {
 
 ACTION_ORDER     = ["Read", "Modify", "Delete", "Trigger", "Enumerate", "Unclear"]
 HV_ORDER         = ["Horizontal", "Vertical", "Unclear"]
-SEVERITY_ORDER   = ["critical", "high", "medium", "low", "None"]
-SEVERITY_LABELS  = {"critical": "Critical", "high": "High",
-                    "medium": "Medium",   "low": "Low", "None": "N/A"}
+SEVERITY_ORDER = [
+    "critical",
+    "high",
+    "medium",
+    "low",
+    "N/A"
+]
 
+SEVERITY_LABELS = {
+    "critical": "Critical",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low",
+    "N/A": "N/A"
+}
 SECTOR_ORDER = [
     "SaaS & Productivity",
     "Social & Consumer Platforms",

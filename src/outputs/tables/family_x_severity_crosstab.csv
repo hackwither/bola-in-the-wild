@@ -1,0 +1,7 @@
+BOLA Family,Critical,High,Medium,Low,N/A,Total
+Direct Object Reference,2,7,13,7,2,31
+Action-Level Object,3,11,12,9,0,35
+Tenant Isolation,2,2,2,1,0,7
+Workflow- Context,0,0,4,1,0,5
+Chained Disclosure,0,1,3,0,0,4
+Object Rebinding,2,0,0,0,0,2

@@ -1,0 +1,7 @@
+BOLA Family,SaaS,Social,E-commerce,Government,Enterprise,Fintech,Total
+Direct Object Reference,5.956,3.0,0.333,0.556,0.667,0.0,10.512
+Action-Level Object,3.17,1.833,1.5,0.222,2.333,0.0,9.058
+Tenant Isolation,0.731,1.333,0.5,0.0,0.0,0.0,2.564
+Workflow- Context,0.143,1.333,0.5,0.0,1.0,0.0,2.976
+Chained Disclosure,0.0,1.5,0.167,0.111,0.0,0.0,1.778
+Object Rebinding,0.0,0.0,0.0,0.111,0.0,1.0,1.111

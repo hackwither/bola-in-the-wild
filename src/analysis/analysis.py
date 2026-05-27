@@ -161,10 +161,18 @@ def mechanism_distribution(df_mechs: pd.DataFrame, n_in_scope: int, save: bool =
 
 
 def severity_distribution(df: pd.DataFrame, save: bool = True) -> pd.DataFrame:
-    """Severity distribution (in-scope)."""
-    result = _ordered_counts(df["severity"], SEVERITY_ORDER, SEVERITY_LABELS)
+    severity = df["severity"].fillna("N/A")
+
+    result = _ordered_counts(
+        severity,
+        SEVERITY_ORDER,
+        SEVERITY_LABELS
+    )
+
     result.rename(columns={"label": "severity"}, inplace=True)
+
     _save_csv(result, "severity_distribution", save)
+
     return result
 
 
@@ -211,12 +219,33 @@ def family_x_severity_crosstab(df: pd.DataFrame, save: bool = True) -> pd.DataFr
     Cross-tabulation: BOLA family (rows) × severity (columns).
     Returns raw counts.
     """
-    sev_order_present = [s for s in SEVERITY_ORDER if s in df["severity"].unique()]
+    # 1. Clean data slice against all text-string and object null variations
+    null_variants = ["null", "None", "nan", "NaN", "", "unrated", "N/A", None]
+    df_clean = df.copy()
+    df_clean["severity"] = df_clean["severity"].astype(str).str.strip().replace(null_variants, "N/A")
+    df_clean["severity"] = df_clean["severity"].fillna("N/A")
+    
+    # 2. Handle case-sensitivity matching dynamically
+    local_order = list(SEVERITY_ORDER) if hasattr(SEVERITY_ORDER, "__iter__") else SEVERITY_ORDER.copy()
+    is_lowercase = len(local_order) > 0 and local_order[0].islower()
+    na_key = "na" if is_lowercase else "N/A"
+    
+    if na_key not in local_order:
+        local_order.append(na_key)
+        
+    if is_lowercase:
+        df_clean["severity"] = df_clean["severity"].replace({"N/A": "na"})
+        
+    # 3. Isolate present categories and generate the cross-tabulation matrix
+    sev_order_present = [s for s in local_order if s in df_clean["severity"].unique()]
+    
     ct = (
-        pd.crosstab(df["bola_family"], df["severity"])
+        pd.crosstab(df_clean["bola_family"], df_clean["severity"])
         .reindex(index=FAMILY_ORDER, columns=sev_order_present, fill_value=0)
     )
-    ct.columns = [SEVERITY_LABELS.get(c, c) for c in ct.columns]
+    
+    # 4. Standardize output formatting structures for figures.py
+    ct.columns = [SEVERITY_LABELS.get(c, "N/A" if c == na_key else c) for c in ct.columns]
     ct.index   = [FAMILY_SHORT.get(i, i).replace("\n", " ") for i in ct.index]
     ct.index.name   = "BOLA Family"
     ct.columns.name = "Severity"
@@ -224,6 +253,121 @@ def family_x_severity_crosstab(df: pd.DataFrame, save: bool = True) -> pd.DataFr
     _save_csv(ct.reset_index(), "family_x_severity_crosstab", save)
     return ct
 
+# ---------------------------------------------------------------------------
+# Program-weighted analysis  (addresses single-program concentration bias)
+# ---------------------------------------------------------------------------
+
+def _program_weights(df: pd.DataFrame) -> pd.Series:
+    """
+    Per-report weight = 1 / (reports from that program in this slice).
+    Each program therefore contributes a total weight of 1.0 regardless
+    of how many reports it has, neutralising concentration bias.
+    """
+    counts = df["program_name"].map(df["program_name"].value_counts())
+    return (1.0 / counts).rename("weight")
+
+
+def program_concentration(df: pd.DataFrame, save: bool = True) -> pd.DataFrame:
+    """
+    Raw report counts per program, share of dataset, and the weight
+    each program would carry in a program-weighted analysis.
+    Useful for quantifying the limitation directly in the paper.
+    """
+    counts = (
+        df["program_name"]
+        .value_counts()
+        .reset_index()
+        .rename(columns={"program_name": "program", "count": "n_reports"})
+    )
+    total = counts["n_reports"].sum()
+    counts["pct_of_dataset"] = (counts["n_reports"] / total * 100).round(1)
+    counts["program_weight"] = (1.0 / counts["n_reports"]).round(4)
+    counts = counts.sort_values("n_reports", ascending=False).reset_index(drop=True)
+    _save_csv(counts, "program_concentration", save)
+    return counts
+
+
+def _weighted_counts(
+    df: pd.DataFrame,
+    col: str,
+    order: list[str],
+    label_map: dict[str, str] | None = None,
+) -> pd.DataFrame:
+    """
+    Compute program-weighted distribution for a single categorical column.
+
+    Steps
+    -----
+    1. Attach per-report weights (1 / program report count).
+    2. Sum weights per category  →  each program contributes weight 1.0 total.
+    3. Normalise to percentages.
+    4. Enforce `order`, fill missing categories with 0.
+    """
+    weights = _program_weights(df)
+    weighted = (
+        df.assign(weight=weights)
+        .groupby(col)["weight"]
+        .sum()
+        .reindex(order, fill_value=0.0)
+        .reset_index()
+        .rename(columns={col: "value", "weight": "weighted_count"})
+    )
+    total_weight = weighted["weighted_count"].sum()
+    weighted["pct"] = (weighted["weighted_count"] / total_weight * 100).round(1)
+    weighted["label"] = (
+        weighted["value"].map(label_map) if label_map
+        else weighted["value"]
+    ).fillna(weighted["value"])
+    return weighted[["label", "weighted_count", "pct"]].reset_index(drop=True)
+
+
+def program_weighted_family_distribution(df: pd.DataFrame, save: bool = True) -> pd.DataFrame:
+    """
+    BOLA family distribution re-weighted so every program contributes equally.
+    Compare against `family_distribution` to assess concentration bias.
+    """
+    result = _weighted_counts(df, "bola_family", FAMILY_ORDER)
+    result.rename(columns={"label": "family"}, inplace=True)
+    _save_csv(result, "pw_family_distribution", save)
+    return result
+
+
+def program_weighted_sector_distribution(df: pd.DataFrame, save: bool = True) -> pd.DataFrame:
+    """
+    Industry sector distribution re-weighted so every program contributes equally.
+    """
+    result = _weighted_counts(df, "industry_sector", SECTOR_ORDER)
+    result.rename(columns={"label": "sector"}, inplace=True)
+    _save_csv(result, "pw_sector_distribution", save)
+    return result
+
+
+def program_weighted_family_x_sector_crosstab(df: pd.DataFrame, save: bool = True) -> pd.DataFrame:
+    """
+    Family × sector cross-tab using program weights instead of raw counts.
+    Each cell is the sum of weights for reports in that (family, sector) cell,
+    so a program with 13 reports in one cell counts the same as one with 1.
+    """
+    weights = _program_weights(df)
+    ct = (
+        df.assign(weight=weights)
+        .pivot_table(
+            index="bola_family",
+            columns="industry_sector",
+            values="weight",
+            aggfunc="sum",
+            fill_value=0.0,
+        )
+        .reindex(index=FAMILY_ORDER, columns=SECTOR_ORDER, fill_value=0.0)
+    )
+    ct = ct.round(3)
+    ct.columns = [c.split(" &")[0] for c in ct.columns]
+    ct.index   = [FAMILY_SHORT.get(i, i).replace("\n", " ") for i in ct.index]
+    ct.index.name   = "BOLA Family"
+    ct.columns.name = "Sector"
+    ct["Total"] = ct.sum(axis=1).round(3)
+    _save_csv(ct.reset_index(), "pw_family_x_sector_crosstab", save)
+    return ct
 
 # ---------------------------------------------------------------------------
 # Convenience: run everything at once
@@ -263,5 +407,9 @@ def run_all(
     tables["confidence"]          = confidence_distribution(df, save)
     tables["family_x_sector"]     = family_x_sector_crosstab(df, save)
     tables["family_x_severity"]   = family_x_severity_crosstab(df, save)
+    tables["program_concentration"]      = program_concentration(df, save)
+    tables["pw_family"]                  = program_weighted_family_distribution(df, save)
+    tables["pw_sector"]                  = program_weighted_sector_distribution(df, save)
+    tables["pw_family_x_sector"]         = program_weighted_family_x_sector_crosstab(df, save)
     print(f"  → {len(tables)} tables computed, {sum(1 for _ in TABLE_DIR.glob('*.csv'))} CSVs saved.")
     return tables

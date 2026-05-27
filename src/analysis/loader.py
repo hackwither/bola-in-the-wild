@@ -83,7 +83,10 @@ def load(path: Path | str = DEFAULT_DATA_FILE) -> tuple[pd.DataFrame, pd.DataFra
     # Normalisation
     # ------------------------------------------------------------------
     # Strings: strip whitespace, normalise case where appropriate
-    df_all["severity"]            = df_all["severity"].fillna("None").astype(str).str.strip().str.lower()
+    df_all["severity"] = df_all["severity"].apply(
+        lambda x: "N/A" if (x is None or (isinstance(x, float) and pd.isna(x)) or str(x).strip().lower() in ("none", "null", "nan", ""))
+        else str(x).strip().lower()
+    )    
     df_all["horizontal_vertical"] = df_all["horizontal_vertical"].fillna("Unclear").astype(str).str.strip().str.capitalize()
     df_all["action_type"]         = df_all["action_type"].fillna("Unclear").astype(str).str.strip()
     df_all["id_format"]           = df_all["id_format"].fillna("unclear").astype(str).str.strip()

@@ -546,7 +546,164 @@ def fig_overview_dashboard(
     _save_fig(fig, "fig_overview_dashboard", save)
     return fig
 
+# ---------------------------------------------------------------------------
+# Program-weighted figures  (addresses single-program concentration bias)
+# ---------------------------------------------------------------------------
 
+def fig_program_concentration(conc_df: pd.DataFrame, save: bool = True) -> plt.Figure:
+    """
+    Horizontal bar: reports per program, descending.
+    Annotates share of dataset so the limitation can be cited directly.
+    """
+    _apply_style()
+    df = conc_df.sort_values("n_reports", ascending=True)   # ascending → largest at top after invert
+    labels = df["program"].tolist()
+    counts = df["n_reports"].tolist()
+    pcts   = df["pct_of_dataset"].tolist()
+
+    # Colour top-2 contributors in accent to call them out
+    max_c  = max(counts)
+    colors = [
+        COLORS["accent"] if c == max(counts) or c == sorted(set(counts))[-2]
+        else COLORS["c3"]
+        for c in counts
+    ]
+
+    fig, ax = plt.subplots(figsize=(FIG_WIDTH_SINGLE, max(FIG_HEIGHT_BASE, len(labels) * 0.5 + 1.5)))
+    ax.barh(labels, counts, color=colors, height=0.6, edgecolor="white", linewidth=0.5)
+    ax.invert_yaxis()
+    ax.set_xlabel("Number of in-scope reports", fontsize=11)
+    ax.set_title(
+        "Report Concentration by Program\n"
+        "(each bar = one bug-bounty program; top contributors highlighted)",
+        fontsize=13, fontweight="bold", pad=12,
+    )
+    ax.set_xlim(0, max_c * 1.35)
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.spines["left"].set_color(COLORS["gridline"])
+
+    for bar, cnt, pct in zip(ax.patches, counts, pcts):
+        ax.text(
+            bar.get_width() + max_c * 0.01,
+            bar.get_y() + bar.get_height() / 2,
+            f"{cnt}  ({pct:.1f}%)",
+            va="center", ha="left", fontsize=ANNOT_FONTSIZE, color=COLORS["text"],
+        )
+    _watermark(ax)
+    fig.tight_layout()
+    _save_fig(fig, "fig_program_concentration", save)
+    return fig
+
+
+def fig_pw_family_comparison(
+    family_raw: pd.DataFrame,
+    family_pw: pd.DataFrame,
+    save: bool = True,
+) -> plt.Figure:
+    """
+    Grouped horizontal bar: raw count % vs program-weighted % per BOLA family.
+    The visual robustness check for the concentration limitation.
+    If bars align closely, findings hold regardless of program skew.
+    """
+    _apply_style()
+    labels  = [FAMILY_SHORT.get(l, l).replace("\n", " ") for l in family_raw["family"]]
+    raw_pct = family_raw["pct"].tolist()
+
+    # pw_family uses 'weighted_count' not 'count'; pct column is shared name
+    pw_pct  = family_pw["pct"].tolist()
+
+    n       = len(labels)
+    y       = np.arange(n)
+    height  = 0.36
+
+    fig, ax = plt.subplots(figsize=(FIG_WIDTH_SINGLE, max(FIG_HEIGHT_BASE, n * 0.9 + 1.5)))
+    bars_raw = ax.barh(y + height / 2, raw_pct, height=height,
+                       color=COLORS["primary"], label="Raw %", edgecolor="white")
+    bars_pw  = ax.barh(y - height / 2, pw_pct,  height=height,
+                       color=COLORS["accent"],  label="Program-weighted %", edgecolor="white",
+                       alpha=0.85)
+
+    ax.set_yticks(y)
+    ax.set_yticklabels(labels, fontsize=9)
+    ax.invert_yaxis()
+    ax.set_xlabel("Share of reports (%)", fontsize=11)
+    ax.set_title(
+        "BOLA Family: Raw vs Program-Weighted Distribution\n"
+        "(convergence = finding robust to concentration bias)",
+        fontsize=13, fontweight="bold", pad=12,
+    )
+    ax.set_xlim(0, max(raw_pct + pw_pct) * 1.35)
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.spines["left"].set_color(COLORS["gridline"])
+
+    for bar, v in zip(bars_raw, raw_pct):
+        ax.text(bar.get_width() + 0.4, bar.get_y() + bar.get_height() / 2,
+                f"{v:.1f}%", va="center", ha="left",
+                fontsize=ANNOT_FONTSIZE - 1, color=COLORS["primary"])
+    for bar, v in zip(bars_pw, pw_pct):
+        ax.text(bar.get_width() + 0.4, bar.get_y() + bar.get_height() / 2,
+                f"{v:.1f}%", va="center", ha="left",
+                fontsize=ANNOT_FONTSIZE - 1, color=COLORS["accent"])
+
+    ax.legend(loc="lower right", fontsize=9, frameon=True, framealpha=0.9)
+    _watermark(ax)
+    fig.tight_layout()
+    _save_fig(fig, "fig_pw_family_comparison", save)
+    return fig
+
+
+def fig_pw_sector_comparison(
+    sector_raw: pd.DataFrame,
+    sector_pw: pd.DataFrame,
+    save: bool = True,
+) -> plt.Figure:
+    """
+    Grouped horizontal bar: raw % vs program-weighted % per industry sector.
+    Same robustness logic as fig_pw_family_comparison.
+    """
+    _apply_style()
+    labels  = sector_raw["sector"].tolist()
+    raw_pct = sector_raw["pct"].tolist()
+    pw_pct  = sector_pw["pct"].tolist()
+
+    n      = len(labels)
+    y      = np.arange(n)
+    height = 0.36
+
+    fig, ax = plt.subplots(figsize=(FIG_WIDTH_SINGLE, max(FIG_HEIGHT_BASE, n * 0.9 + 1.5)))
+    bars_raw = ax.barh(y + height / 2, raw_pct, height=height,
+                       color=COLORS["primary"], label="Raw %", edgecolor="white")
+    bars_pw  = ax.barh(y - height / 2, pw_pct,  height=height,
+                       color=COLORS["accent"],  label="Program-weighted %", edgecolor="white",
+                       alpha=0.85)
+
+    ax.set_yticks(y)
+    ax.set_yticklabels(labels, fontsize=9)
+    ax.invert_yaxis()
+    ax.set_xlabel("Share of reports (%)", fontsize=11)
+    ax.set_title(
+        "Industry Sector: Raw vs Program-Weighted Distribution\n"
+        "(convergence = finding robust to concentration bias)",
+        fontsize=13, fontweight="bold", pad=12,
+    )
+    ax.set_xlim(0, max(raw_pct + pw_pct) * 1.35)
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.spines["left"].set_color(COLORS["gridline"])
+
+    for bar, v in zip(bars_raw, raw_pct):
+        ax.text(bar.get_width() + 0.4, bar.get_y() + bar.get_height() / 2,
+                f"{v:.1f}%", va="center", ha="left",
+                fontsize=ANNOT_FONTSIZE - 1, color=COLORS["primary"])
+    for bar, v in zip(bars_pw, pw_pct):
+        ax.text(bar.get_width() + 0.4, bar.get_y() + bar.get_height() / 2,
+                f"{v:.1f}%", va="center", ha="left",
+                fontsize=ANNOT_FONTSIZE - 1, color=COLORS["accent"])
+
+    ax.legend(loc="lower right", fontsize=9, frameon=True, framealpha=0.9)
+    _watermark(ax)
+    fig.tight_layout()
+    _save_fig(fig, "fig_pw_sector_comparison", save)
+    return fig
 # ---------------------------------------------------------------------------
 # Save-all convenience
 # ---------------------------------------------------------------------------
@@ -589,6 +746,9 @@ def save_all(tables: dict, save: bool = True) -> dict[str, plt.Figure]:
         n_total=int(tables["scope"]["count"].sum()),
         save=save,
     )
+    figs["program_concentration"]  = fig_program_concentration(tables["program_concentration"], save)
+    figs["pw_family_comparison"]   = fig_pw_family_comparison(tables["family"], tables["pw_family"], save)
+    figs["pw_sector_comparison"]   = fig_pw_sector_comparison(tables["sector"], tables["pw_sector"], save)
     print(f"  → {len(figs)} figures generated.")
     for fig in figs.values():
         plt.close(fig)
