@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-title: "BOLA in the Wild: Taxonomy and Meta-Analysis of 100+ HackerOne Disclosures"
+title: "Broken Object Level Authorization in the Wild: An Empirical Taxonomy from 100+ Bug Bounty Disclosures"
 message: "If you use this dataset, taxonomy, or analysis framework in your research, please cite this repository."
 type: dataset
 
@@ -8,14 +8,9 @@ authors:
     given-names: "Bandana"
     affiliation: "APIsec Research Labs"
 
-  - family-names: "Haro Peralta"
-    given-names: "Jose"
-    affiliation: "APIsec Research Labs"
-
 abstract: >
   This repository accompanies the paper
-  "Broken Object Level Authorization in the Wild:
-  A Taxonomy and Quantitative Meta-Analysis of 100+ HackerOne Disclosures".
+  "Broken Object Level Authorization in the Wild: An Empirical Taxonomy from 100+ Bug Bounty Disclosures".
   It contains the manually verified dataset, taxonomy definitions,
   classifier prompts, and analysis scripts used to study real-world
   Broken Object Level Authorization (BOLA) vulnerabilities disclosed
@@ -38,14 +33,12 @@ repository-code: "https://github.com/hackwither/bola-in-the-wild"
 
 preferred-citation:
   type: article
-  title: "Broken Object Level Authorization in the Wild: A Taxonomy and Quantitative Meta-Analysis of 100+ HackerOne Disclosures"
+  title: "Broken Object Level Authorization in the Wild: An Empirical Taxonomy from 100+ Bug Bounty Disclosures"
 
   authors:
     - family-names: "Kaur"
       given-names: "Bandana"
 
-    - family-names: "Haro Peralta"
-      given-names: "Jose"
 
   year: 2026
 
