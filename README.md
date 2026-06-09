@@ -134,7 +134,7 @@ All figures and summary statistics in the paper are reproduced by `main.py` from
 
 ```bibtex
 @techreport{kaur2026bola,
-  title        = {Broken Object Level Authorization in the Wild: A Taxonomy and Quantitative Meta-Analysis of 100+ HackerOne Disclosures},
+  title        = {Broken Object Level Authorization in the Wild: An Empirical Taxonomy from 100+ Bug Bounty Disclosures},
   author       = {Kaur, Bandana and Haro Peralta, Jose},
   institution  = {APIsec Research Labs},
   year         = {2026}
